@@ -46,7 +46,7 @@ export class Registration {
       }
       this.message.show('success','Ok', res.message)
       this.newUser={
-        id: 0,
+      
         name: '',
         email: '',
         password: '',
@@ -55,6 +55,7 @@ export class Registration {
         adress:"",
         phone:""
       }
+      this.router.navigate(['/pizzalist']);
       
     })
   }

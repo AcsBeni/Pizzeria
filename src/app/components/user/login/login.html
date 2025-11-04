@@ -1,14 +1,15 @@
 <div class="p-3 col-sm-6 offset-sm-3">
     <h3 class="mb-5">Login</h3>
-    <form>
+    <div>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" [(ngModel)]="User.email">
         </div>
         <div class="mb-3">
           <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1">
+          <input type="password" class="form-control" id="exampleInputPassword1" [(ngModel)]="User.password">
         </div>
+       
         <div class="d-flex mb-3 justify-content-between">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="checkDefault">
@@ -22,7 +23,7 @@
             
         </div>
         
-      </form>
+      </div>
       <div class="d-flex gap-2">
         <button class="btn btn-primary"(click)="login()"><i class="bi bi-box-arrow-in-right"></i>&nbsp;&nbsp;Login</button>
         <button class="btn btn-secondary" routerLink="/registration"><i class="bi bi-person-add"></i>&nbsp;&nbsp;registration</button>

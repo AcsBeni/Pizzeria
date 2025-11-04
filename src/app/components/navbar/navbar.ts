@@ -3,6 +3,7 @@ import { Navitem } from '../../interfaces/navitem';
 
 import { RouterLink } from "@angular/router";
 import { CommonModule } from '@angular/common';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -11,22 +12,38 @@ import { CommonModule } from '@angular/common';
   styleUrl: './navbar.scss',
 })
 export class NavbarComponent implements OnInit {
+  constructor(    
+   
+    private auth: Auth
+  ){
+  }
   @Input() title = '';
 
   navItems: Navitem[] = [];
 
   ngOnInit(): void {
-    this.setupMenu();
+    this.auth.Isloggedin$.subscribe(res=>{
+      console.log(res)
+      this.setupMenu(res);
+    })
+    
   }
 
-  setupMenu() {
+  setupMenu(Isloggedin:boolean) {
     this.navItems = [
       {
         name: 'Pizzalista',
         url: 'pizzalist',
         icon: '',
       },
-      {
+      ...(Isloggedin)?[
+        {
+          name: 'Kilépés',
+          url: 'logout',
+          icon: '',
+        },
+
+      ]:[{
         name: 'Regisztráció',
         url: 'registration',
         icon: '',
@@ -35,7 +52,8 @@ export class NavbarComponent implements OnInit {
         name: 'Belépés',
         url: 'login',
         icon: '',
-      },
+      },]
+      
     ];
   }
 }

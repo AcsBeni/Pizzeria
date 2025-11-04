@@ -66,6 +66,26 @@ export class Apiservice {
       };
     }
   }
+  //login
+  async login(table:string, data:any){
+    try{
+      const response = await axios.post(`${this.SERVER}/${table}/login`, data)
+      return {
+        status: 200,
+        message: "bejelentkezés sikeres", 
+        data: response.data
+      };
+     
+    }
+    catch(err:any){
+      console.log(err)
+      return{
+        status: 500,
+        message: err.response.data.error
+      };
+    }
+  }
+
 
 
   //INSERT one record into table -> POST http://localhost:3000/users
