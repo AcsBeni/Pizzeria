@@ -1,0 +1,52 @@
+<div class="p-3 col-sm-6 offset-sm-3">
+    <h3 class="mb-5">registration</h3>
+    <div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Email address <em>*</em></label>
+          <input type="email" class="form-control"  [(ngModel)]="newUser.email" id="exampleInputEmail1" aria-describedby="emailHelp" >
+        </div>
+        
+        <div class="mb-3">
+            <label for="name" class="form-label">Name <em>*</em></label>
+            <input type="text" class="form-control" id="name" aria-describedby="emailHelp"  [(ngModel)]="newUser.name">
+          </div>
+         
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone </label>
+            <input type="text" class="form-control" id="phone" aria-describedby="emailHelp" [(ngModel)]="newUser.phone">
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Adress</label>
+            <input type="text" class="form-control" id="adress" aria-describedby="emailHelp" [(ngModel)]="newUser.adress">
+          </div>
+          
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password <em>*</em></label>
+          <input type="password" class="form-control" id="exampleInputPassword1" [(ngModel)]="newUser.password">
+        </div>
+       
+        <div class="mb-3">
+            <label for="confirm" class="form-label">Confirm password <em>*</em></label>
+            <input type="password" class="form-control" id="confirm" [(ngModel)]="newUser.confirm">
+          </div>
+         
+        <div class="d-flex mb-3 justify-content-between">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkDefault" [(ngModel)]="acceptTerms" >
+                <label class="form-check-label" for="rememberme">
+                  Accept conditions
+                </label>
+            </div>
+            <div>
+                <a href="" routerLink="/lostpass">I forgot my password</a>
+          </div>
+          
+            
+        </div>
+        
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary" (click)="registration()"><i class="bi bi-person-add"></i>&nbsp;&nbsp;registration</button>
+        <button class="btn btn-secondary" routerLink="/login"><i class="bi bi-box-arrow-in-right"></i>&nbsp;&nbsp;Login</button>
+      </div>
+</div>

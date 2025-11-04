@@ -1,0 +1,23 @@
+<div class="p-3 col-sm-6 offset-sm-3">
+    <h3 class="mb-5">Update password</h3>
+    <form>
+      
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="oldpass" placeholder="Password">
+            <label for="oldpass">Password</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="newpass" placeholder="Password">
+            <label for="newpass">New Password</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="confnewpass" placeholder="Password">
+            <label for="confnewpass">Confirm new Password</label>
+          </div>
+         
+        
+        
+      </form>
+      <button class="btn btn-primary" (click)="save()"><i class="bi bi-arrow-repeat"></i>&nbsp;&nbsp;Update password</button>
+      
+</div>
