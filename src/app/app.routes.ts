@@ -12,8 +12,8 @@ export const routes: Routes = [
     {path: 'registration', component:Registration},
     {path: 'logout', component:Logout},
 
-    {path:"*", component:Notfound},
-    {path:"", redirectTo:'pizzalista',pathMatch:'full'}
+    {path:"notfound", component:Notfound},
+    {path:"", redirectTo:'notfound',pathMatch:'full'}
 
 
 ];

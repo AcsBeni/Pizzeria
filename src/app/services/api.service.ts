@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { ApiResponse } from '.././interfaces/APIresponse';
+import { enviroment } from '../../enviroment/enviroment';
 
 
 @Injectable({
@@ -8,7 +9,7 @@ import { ApiResponse } from '.././interfaces/APIresponse';
 })
 
 export class Apiservice {
-  SERVER = "http://localhost:3000";
+  SERVER = enviroment.serverUrl;
   constructor() { }
 
   //GET all records from table -> GET http://localhost:3000/users

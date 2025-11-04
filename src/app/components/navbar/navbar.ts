@@ -2,12 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Navitem } from '../../interfaces/navitem';
 
 import { RouterLink } from "@angular/router";
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgIf],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
@@ -18,12 +18,17 @@ export class NavbarComponent implements OnInit {
   ){
   }
   @Input() title = '';
-
+  isLoggedIn = false
+  loggedUserName=''
   navItems: Navitem[] = [];
 
   ngOnInit(): void {
     this.auth.Isloggedin$.subscribe(res=>{
-      console.log(res)
+      this.isLoggedIn= res
+      if(this.isLoggedIn){
+        this.loggedUserName= this.auth.loggedUser()[0].name
+      }
+     
       this.setupMenu(res);
     })
     
