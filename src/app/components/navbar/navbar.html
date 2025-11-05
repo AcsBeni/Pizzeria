@@ -8,7 +8,10 @@
         <ul class="navbar-nav">
          
           <li class="nav-item" *ngFor="let items of navItems">
-            <a class="nav-link" routerLink="{{items.url}}" >{{items.name}}</a>
+            <a class="nav-link" routerLink="{{items.url}}" >{{items.name}}
+              <span class="badge text-bg-danger">{{items.badge}}</span>
+            </a>
+            
           </li>
         </ul>
       </div>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterModule } from "@angular/router";
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { MessageService } from '../../../services/message.service';
 import { Apiservice } from '../../../services/api.service';
 import { FormsModule } from '@angular/forms';
@@ -32,6 +32,7 @@ export class Login {
       role: 'user',
       
     }
+  rememberMe:boolean=false
   login(){
     if(!this.User.email || !this.User.password){
       this.message.show('danger', 'Hiba', "Nem adtál meg minden adatot!")
@@ -43,11 +44,16 @@ export class Login {
         this.message.show('danger', 'Hiba', res.message)
         return
       }
+      if(this.rememberMe){
+        this.auth.storeUser(JSON.stringify(res.data))
+      }
       if(res.status===200){
         this.auth.login(JSON.stringify(res.data))
         this.message.show('success','Ok', res.message)
         this.router.navigate(['/pizzalist']);
       }
+      //maradjon bejelentkezve
+      
      
       
     })
