@@ -1,1 +1,93 @@
-<p>pizzas works!</p>
+<h3>Pizzák kezelése</h3>
+
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="bi-plus-circle"></i> Új pizza felvétele
+  </button>
+  
+<table class="table table-hover table-striped">
+    <thead>
+        <th>#</th>
+        <th>Kép</th>
+        <th>Megnevezés</th>
+        <th>Leírás</th>
+        <th class="text-end">Kalória</th>
+        <th class="text-end">Ár</th>
+        <th class="text-end">Műveletek</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let pizza of pizzas; let i = index">
+            <td>{{i+1}}</td>
+            <td><img src="assets/{{pizza.image}}" class="d-block w-100 cimg" ></td>
+            <td>{{pizza.name}}</td>
+            <td>{{pizza.description}}</td>
+            <td class="text-end">{{pizza.calory}} kcal</td>
+            <td class="text-end">{{pizza.price}} {{currency}} </td>
+            <td class="text-end">
+                <button class="btn btn-warning me-2"><i class="bi-pencil"></i></button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal"><i class="bi-trash"></i></button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td class="text-center" colspan="7">Összesen: <strong>0</strong>  rekord</td>
+        </tr>
+    </tfoot>
+</table>
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+
+<!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Pizza hozzáadása</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Mentés</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Törlés Modal -->
+
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="confirmModalLabel">Megerősítés</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Biztosan törölni szeretné?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger"><i class="bi-x-circle"></i> Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
