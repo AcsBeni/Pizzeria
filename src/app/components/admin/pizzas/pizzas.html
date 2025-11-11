@@ -18,7 +18,7 @@
     <tbody>
         <tr *ngFor="let pizza of pagedPizza; let i = index">
             <td>{{i+1}}</td>
-            <td><img  src="http://localhost:3000/uploads/{{pizza.image}}" alt="{{pizza.name}}" class="thumbnail">
+            <td><img  src="http://localhost:3000/uploads/{{pizza.image}}" alt="{{pizza.name}}" class="thumbnail" (click)="openlightbox(pizza.image)">
             </td>  
             <td>{{pizza.name}}</td>
             <td>{{pizza.description}}</td>
@@ -61,7 +61,7 @@
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="!editMode">Pizza hozzáadása</h1>
           <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="editMode">Pizza hozzáadása</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="cancel()" aria-label="Close"></button>
         </div>
         <div class="modal-body">
          
@@ -82,7 +82,7 @@
             <input class="form-control" type="file" id="image" accept="image/*" (change)="onFileSelected($event)">
           </div>
           <div class="mb-3" *ngIf="pizza.image!=''">
-            <img *ngIf="pizza.image" src="http://localhost:3000/uploads/{{pizza.image}}" alt="{{pizza.name}}" class="thumbnail">
+            <img *ngIf="pizza.image" src="http://localhost:3000/uploads/{{pizza.image}}" alt="{{pizza.name}}" (click)="openlightbox(pizza.image)" class="thumbnail">
              <button class="btn btn-danger ms-3" (click)="deleteimage(pizza.id,pizza.image)"><i class="bi bi-trash3-fill"></i></button>
             <input class="form-control" type="file" id="image" accept="image/*" (change)="onFileSelected($event)">
           </div>
@@ -95,7 +95,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancel()">Close</button>
           <button type="button" class="btn btn-primary" (click)="save()">Mentés</button>
         </div>
       </div>
@@ -120,3 +120,4 @@
       </div>
     </div>
   </div>
+  <app-lightbox [imageUrl]="lightBoxImage" [visible]="lightBoxVisible" (closed)="lightBoxVisible"></app-lightbox>
