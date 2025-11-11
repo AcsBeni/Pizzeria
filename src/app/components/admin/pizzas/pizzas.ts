@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Apiservice } from '../../../services/api.service';
 import { Pizza } from '../../../interfaces/pizza';
@@ -12,7 +12,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-pizzas',
   standalone: true,
-  imports: [CommonModule, FormsModule, NumberformatPipe],
+  imports: [CommonModule, FormsModule, NumberformatPipe, NgIf],
   templateUrl: './pizzas.html',
   styleUrls: ['./pizzas.scss'],
 })
@@ -30,6 +30,8 @@ export class Pizzas implements OnInit, AfterViewInit {
   totalPages=1
   pagedPizza:Pizza[]=[]
 
+  selectedFile: File |null=null
+
   pizzas: Pizza[] = [];
   pizza: Pizza = {
     id: 0,
@@ -37,6 +39,7 @@ export class Pizzas implements OnInit, AfterViewInit {
     description: '',
     calory: 0,
     price: 0,
+    image:"",
   };
 
   constructor(
@@ -78,8 +81,25 @@ export class Pizzas implements OnInit, AfterViewInit {
 
 
 
-  save() {
+  async save() {
     //pizza módosítása
+    if(this.selectedFile){
+      const formData = new FormData()
+      formData.append('image', this.selectedFile)
+
+      const res = await this.api.upload(formData).then(res=>{
+        if(res.status != 200){
+          this.message.show('danger', 'Hiba', res.message!);
+        }else{
+          this.pizza.image = res.data.filename
+        }
+        
+      })
+    }
+    if (!this.pizza.name || this.pizza.price === 0 || this.pizza.calory === 0) {
+      this.message.show('danger', 'Hiba', 'Nem adtál meg minden adatot!');
+      return;
+    }
     if(this.editMode){
       this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then((res) => {
         if (res.data.length !== 0 && res.data[0].id != this.pizza.id) {
@@ -105,11 +125,8 @@ export class Pizzas implements OnInit, AfterViewInit {
     }
     //pizza felvétele
     else{
-      if (!this.pizza.name || this.pizza.price === 0 || this.pizza.calory === 0) {
-        this.message.show('danger', 'Hiba', 'Nem adtál meg minden adatot!');
-        return;
-      }
-  
+      
+      
       this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then((res) => {
         if (res.data.length !== 0) {
           this.message.show('danger', 'Hiba', 'Van már ilyen pizza!');
@@ -150,6 +167,23 @@ export class Pizzas implements OnInit, AfterViewInit {
         price: 0,
       };
       this.getPizzas();
+    })
+  }
+
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0]; // ✅ pick first file
+  }
+  deleteimage(id:number,filename:any){
+    this.api.deleteImage(filename).then(res=>{
+      console.log(res)
+      if(res.status==200){
+        this.api.update("pizzas",id, this.pizza).then(res =>{
+          this.message.show('success', 'OK', 'Sikeres változtatás!');
+          
+          return
+        })
+      }
     })
   }
 }

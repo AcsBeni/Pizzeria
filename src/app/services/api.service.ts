@@ -48,6 +48,22 @@ export class Apiservice {
       };
     }
   }
+
+  async upload(formData: FormData): Promise<ApiResponse> {
+    try {
+      const response = await axios.post(`${this.SERVER}/upload`, formData);
+      return {
+        status: 200,
+        data: response.data,
+      };
+    } catch (err: any) {
+      
+      return {
+        status: 500,
+        message: "Nem sikerült a fájl feltöltése",
+      };
+    }
+  }
   //regisztráció
   async registration(table:string, data:any){
     try{
@@ -106,6 +122,23 @@ export class Apiservice {
         status: 500,
         message: "Hiba a művelet során"
       };
+    }
+  }
+
+  async deleteImage(filename: string): Promise<ApiResponse>{
+    try{
+      const response = await axios.delete(`${this.SERVER}/image/${filename}`)
+      return{
+        status: 200,
+        data: response.data
+      }
+    }
+    catch(err){
+      return{
+        status: 500,
+        message: "Hiba a művelet során"
+      };
+
     }
   }
 //UPDATE one record in table by id -> PATCH http://localhost:3000/users/5 
