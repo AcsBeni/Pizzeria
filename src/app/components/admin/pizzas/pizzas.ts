@@ -18,197 +18,219 @@ declare var bootstrap: any;
   styleUrls: ['./pizzas.scss'],
 })
 export class Pizzas implements OnInit, AfterViewInit {
-  @ViewChild('formModal') formModalEl!: ElementRef;
-  
-  lightBoxVisible = false;
-  lightBoxImage = ''
+   serverUrl = enviroment.serverUrl;
+  lightboxVisible = false;
+  lightboxImage = '';
 
-  editMode=false
-  confirmModal:any;
+  // lapozóhoz szükséges változók
+  currentPage = 1;
+  pageSize = 5;
+  totalPages = 1;
+  pagedPizzas: Pizza[] = [];
+
+  selectedFile: File | null = null;
+
   formModal: any;
+  confirmModal: any;
+
+  editMode = false;
+
   currency = enviroment.currency;
 
-  //lapozhatás
-  currentpage=1
-  pageSize=5
-  totalPages=1
-  pagedPizza:Pizza[]=[]
-
-  selectedFile: File |null=null
-
   pizzas: Pizza[] = [];
+
   pizza: Pizza = {
     id: 0,
     name: '',
+    image: '',
     description: '',
     calory: 0,
-    price: 0,
-    image:"",
+    price: 0
   };
+
+  startIndex = 1;
+  endIndex = 1;
 
   constructor(
     private api: Apiservice,
     private message: MessageService
-  ) {}
+  ) { }
+  ngAfterViewInit(): void {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void {
-    this.formModal = new bootstrap.Modal("#exampleModal");
-    this.confirmModal = new bootstrap.Modal("#confirmModal");
+
+    this.formModal = new bootstrap.Modal('#formModal');
+    this.confirmModal = new bootstrap.Modal('#confirmModal');
+
     this.getPizzas();
   }
 
-  ngAfterViewInit(): void {
-    
-  }
-
   getPizzas() {
-    this.api.selectAll('pizzas').then((res) => {
+    this.api.selectAll('pizzas').then(res => {
       this.pizzas = res.data;
       this.totalPages = Math.ceil(this.pizzas.length / this.pageSize);
-      this.setPage(1)
-    });
-  }
-  setPage(page:number){
-    this.currentpage =page;
-    const startIndex= (page-1) * this.pageSize;
-    const endIndex= startIndex + this.pageSize;
-    this.pagedPizza = this.pizzas.slice(startIndex, endIndex)
-  }
-
-  getPizza(id:number){
-    this.api.select('pizzas',id).then(res =>{
-      this.pizza = res.data[0];
-      this.editMode=true
-      this.formModal.show();
+      this.setPage(1);
     })
   }
 
+  setPage(page: number){
 
+    this.currentPage = page;
+    this.startIndex = (page-1) * this.pageSize;
+    this.endIndex = this.startIndex + this.pageSize;
+    this.pagedPizzas =  this.pizzas.slice(this.startIndex, this.endIndex);
+
+  }
+
+  getPizza(id: number) {
+    this.api.select('pizzas', id).then(res => {
+      this.pizza = res.data[0];
+      this.editMode = true;
+      this.formModal.show();
+    });
+  }
 
   async save() {
-    //pizza módosítása
-    if(this.selectedFile){
-      const formData = new FormData()
-      formData.append('image', this.selectedFile)
 
-      const res = await this.api.upload(formData).then(res=>{
-        if(res.status != 200){
-          this.message.show('danger', 'Hiba', res.message!);
-        }else{
-          this.pizza.image = res.data.filename
-        }
-        
-      })
-    }
-    if (!this.pizza.name || this.pizza.price === 0 || this.pizza.calory === 0) {
-      this.message.show('danger', 'Hiba', 'Nem adtál meg minden adatot!');
+    if (!this.pizza.name || this.pizza.price == 0 || this.pizza.calory == 0) {
+      this.message.show('danger', 'Hiba', 'Nem adtál meg minden kötelezős adatot!');
       return;
     }
-    if(this.editMode){
-      this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then((res) => {
-        if (res.data.length !== 0 && res.data[0].id != this.pizza.id) {
-          this.message.show('danger', 'Hiba', 'Van már ilyen pizza!');
+
+      if (this.selectedFile){
+        const formData = new FormData();
+        formData.append('image', this.selectedFile);
+
+        const res = await this.api.upload(formData);
+
+        if (res.status != 200){
+          this.message.show('danger', 'Hiba', res.message!);
+        }
+        else{
+          this.pizza.image = res.data.filename;
+        }
+
+      }
+
+    if (this.editMode) {
+
+      // pizza módosítása
+      this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then(res => {
+
+        if (res.data.length != 0 && res.data[0].id != this.pizza.id) {
+          this.message.show('danger', 'Hiba', 'Van már ilyen nevű pizza!');
           return;
         }
-        this.api.update("pizzas",this.pizza.id, this.pizza).then(res =>{
-          this.message.show('success', 'OK', 'Sikeres változtatás!');
-          this.formModal.hide()
-          this.editMode=false
-          this.pizza = {
-            id: 0,
-            name: '',
-            description: '',
-            calory: 0,
-            price: 0,
-          };
-          this.getPizzas()
-          return
-        })
-      
-      });
-    }
-    //pizza felvétele
-    else{
-      
-      
-      this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then((res) => {
-        if (res.data.length !== 0) {
-          this.message.show('danger', 'Hiba', 'Van már ilyen pizza!');
-          return;
-        }
-  
-        this.api.insert('pizzas', this.pizza).then(() => {
-          this.message.show('success', 'Ok', 'A pizza hozzáadva!');
-          this.getPizzas();
+
+       // this.pizza.image = '';
+
+        this.api.update('pizzas', this.pizza.id, this.pizza).then(res => {
+          this.message.show('success', 'Ok', 'A pizza módosítva!');
           this.formModal.hide();
-  
+          this.editMode = false;
           this.pizza = {
             id: 0,
             name: '',
+            image: '',
             description: '',
             calory: 0,
-            price: 0,
+            price: 0
           };
-  
-          
+          this.getPizzas();
         });
+
       });
+
+    }
+    else {
+
+      // Új pizza felvétele
+
+      this.api.selectAll('pizzas/name/eq/' + this.pizza.name).then(res => {
+        if (res.data.length != 0) {
+          this.message.show('danger', 'Hiba', 'Van már ilyen nevű pizza!');
+          return;
+        }
+
+        this.api.insert('pizzas', this.pizza).then(res => {
+          this.message.show('success', 'Ok', 'A pizza hozzáadva!');
+          this.formModal.hide();
+          this.pizza = {
+            id: 0,
+            name: '',
+            image: '',
+            description: '',
+            calory: 0,
+            price: 0
+          };
+          this.getPizzas();
+        });
+
+      });
+
     }
   }
-  confirmDelete(id:number){
-    this.pizza.id = id
+
+  confirmDelete(id: number) {
+    this.pizza.id = id;
     this.confirmModal.show();
   }
-  delete(id:number){
-    let pizzad = this.pizzas.find(item => item.id ==id)
-    if(pizzad &&pizzad?.image !=''){
-      this.api.deleteImage(pizzad?.image!)
+
+  delete(id: number) {
+    let pizza = this.pizzas.find(item => item.id == id);
+
+    if (pizza && pizza.image != ''){
+      this.api.deleteImage(pizza.image!);
     }
-    this.api.delete('pizzas',id).then(res=>{
-      this.message.show("success","Ok","A pizza törölve lett!")
+
+    this.api.delete('pizzas', id).then(res => {
+      this.message.show('success', 'Ok', 'A pizza törölve!');
       this.confirmModal.hide();
       this.pizza = {
         id: 0,
         name: '',
+        image: '',
         description: '',
         calory: 0,
-        price: 0,
+        price: 0
       };
       this.getPizzas();
-    })
+    });
+  }
+
+  onFileSelected(event:any){
+    this.selectedFile = event.target.files[0];
+  }
+
+  deleteImage(id: number, filename: string){
+    this.api.deleteImage(filename).then(res =>{
+       if (res.status == 200){
+        this.pizza.image = '';
+        this.api.update('pizzas', id, this.pizza).then(res => {
+          this.message.show('success', 'Ok', 'A kép törölve!');
+        });
+       }
+    });
+  }
+
+  openLightbox(image: string){
+    this.lightboxImage = this.serverUrl + '/uploads/' + image;
+    this.lightboxVisible = true;
   }
 
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0]; // ✅ pick first file
-  }
-  deleteimage(id:number,filename:any){
-    this.api.deleteImage(filename).then(res=>{
-      console.log(res)
-      if(res.status==200){
-        this.api.update("pizzas",id, this.pizza).then(res =>{
-          this.message.show('success', 'OK', 'Sikeres változtatás!');
-          
-          return
-        })
-      }
-    })
-  }
-
-  openlightbox(image:any){
-    
-    this.lightBoxVisible = true
-    this.lightBoxImage = 'http://localhost:3000/uploads' +image
-  }
   cancel(){
     this.pizza = {
       id: 0,
       name: '',
+      image: '',
       description: '',
       calory: 0,
-      price: 0,
+      price: 0
     };
-    this.getPizzas();//csak akkor, ha volt változás
-    this.formModal.hide()
+    this.getPizzas(); // ezt csak akkor ha volt változás pl kép törlés
+    this.formModal.hide();
   }
 }
