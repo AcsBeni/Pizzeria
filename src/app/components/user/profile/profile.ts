@@ -27,9 +27,6 @@ export class Profile {
       password:"",
       role:"user"
    
-
-      
-
     }
     emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;

@@ -29,7 +29,7 @@ export class Pizzas implements OnInit, AfterViewInit {
   pagedPizzas: Pizza[] = [];
 
   selectedFile: File | null = null;
-
+  
   formModal: any;
   confirmModal: any;
 
@@ -55,33 +55,51 @@ export class Pizzas implements OnInit, AfterViewInit {
     private api: Apiservice,
     private message: MessageService
   ) { }
-  ngAfterViewInit(): void {
-    throw new Error('Method not implemented.');
+  
+  ngOnInit(): void {
+    this.getPizzas(); // Fetch pizzas in ngOnInit
   }
 
-  ngOnInit(): void {
-
-    this.formModal = new bootstrap.Modal('#formModal');
-    this.confirmModal = new bootstrap.Modal('#confirmModal');
-
-    this.getPizzas();
+  ngAfterViewInit(): void {
+    // Initialize modals after the view has been fully initialized
+    this.formModal = new bootstrap.Modal(document.getElementById('formModal'));
+    this.confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
   }
 
   getPizzas() {
     this.api.selectAll('pizzas').then(res => {
-      this.pizzas = res.data;
-      this.totalPages = Math.ceil(this.pizzas.length / this.pageSize);
-      this.setPage(1);
-    })
+      if (res && res.data) {
+        this.pizzas = res.data;
+        console.log('Fetched pizzas:', this.pizzas); // Debugging
+        this.totalPages = Math.ceil(this.pizzas.length / this.pageSize);
+        this.setPage(1); // Initialize the first page
+      } else {
+        console.error('Failed to fetch pizzas or no data returned.');
+        this.pizzas = [];
+        this.pagedPizzas = [];
+        this.totalPages = 0;
+      }
+    }).catch(err => {
+      console.error('Error fetching pizzas:', err);
+      this.pizzas = [];
+      this.pagedPizzas = [];
+      this.totalPages = 0;
+    });
   }
 
-  setPage(page: number){
-
+  setPage(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      console.warn('Invalid page number:', page);
+      return;
+    }
+  
     this.currentPage = page;
-    this.startIndex = (page-1) * this.pageSize;
+    this.startIndex = (page - 1) * this.pageSize;
     this.endIndex = this.startIndex + this.pageSize;
-    this.pagedPizzas =  this.pizzas.slice(this.startIndex, this.endIndex);
-
+  
+    // Slice the pizzas array to get the current page's pizzas
+    this.pagedPizzas = this.pizzas.slice(this.startIndex, this.endIndex);
+    console.log('Paged pizzas:', this.pagedPizzas);
   }
 
   getPizza(id: number) {

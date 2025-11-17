@@ -4,6 +4,11 @@ import { Apiservice } from '../../../services/api.service';
 import { MessageService } from '../../../services/message.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Auth } from '../../../services/auth';
+import { Order } from '../../../interfaces/order';
+
+declare var bootstrap: any;
+
 
 @Component({
   selector: 'app-users',
@@ -15,29 +20,55 @@ export class Users {
   
     constructor(
       private api: Apiservice,
-      private message: MessageService
+      private message: MessageService,
+      private authService: Auth
     ) {}
 
+    loggeduser:User={
+      name: '',
+      email: '',
+      password: '',
+      role: 'user'
+    }
+    selecteduser:User ={
+      name: '',
+      email: '',
+      password: '',
+      role: 'user'
+    }
     user: User={
       name: '',
       email: '',
       password: '',
       role: 'user'
     }
+    orders:Order[]=[]
     users:User[]=[]
+    activeTab: string = 'userinfo';
 
     //lapozhatás
     currentpage=1
     pageSize=5
     totalPages=1
     pagedUser:User[]=[]
+    formModal: any;
+    editMode=false
 
     search=''
 
     ngOnInit(): void {
-     
+      this.getLoggedUser();
       this.getUsers();
     }
+
+    ngAfterViewInit(): void {
+      this.formModal = new bootstrap.Modal(document.getElementById('formModal'));
+    }
+
+  getLoggedUser() {
+    this.loggeduser = this.authService.loggedUser()[0];
+    
+  }
   getUsers() {
     this.api.selectAll('users').then((res) => {
       this.users = res.data;
@@ -54,34 +85,50 @@ export class Users {
       this.pagedUser = this.users.slice(startIndex, endIndex)
     }
 
-    letiltas(id:number, status:number){
-      this.api.update("/users",id,status).then(res =>{
-        if(res.status===200){
-          this.message.show('success', 'OK', 'Sikeres változtatás!');
-        }
-        else{
-          this.message.show("danger",'Hiba','Hiba történt!');
-        }
+    statusChange(id:number){
+     
+      if(id == this.loggeduser.id){
+        this.message.show('warning','Hiba', `Saját magad státuszát nem változtathatod meg!`)
+        return;
+      }
+      
+      let idx = this.users.findIndex(u => u.id === id);
+      this.users[idx].status = !this.users[idx].status;
+
+      this.api.update('users', id, {status: this.users[idx].status ? 1: 0}).then(res => {
+        this.message.show('success','Ok', `${res.message}`)
+      })
+      
+      
+    }
+
+    //modal form kezelése
+    cancel(){
+      this.formModal.hide();
+      this.selecteduser = {
+        name: '',
+        email: '',
+        password: '',
+        role: 'user'
+      };
+      this.orders = [];
+      
+    }
+    save(){
+
+    }
+    showDetails(id: number) {
+      const idx = this.users.findIndex(u => u.id === id);
+      if (idx !== -1) {
+        this.selecteduser = this.users[idx];
        
-        return
-      })
+      } else {
+        this.message.show('warning', 'Hiba', 'A felhasználó nem található!');
+      }
+      this.api.select('orders/user_id/eq/', id).then(res => {
+       this.orders = res.data;
+       this.formModal.show();
+      });
+     
     }
-    visszatiltas(id:number, status:number){
-      this.api.select("users", id).then(res=>{
-        
-        this.api.update("users",id,res.data[0]).then(res =>{
-          if(res.status===200){
-            this.message.show('success', 'OK', 'Sikeres változtatás!');
-          }
-          else{
-            this.message.show("danger",'Hiba','Hiba történt!');
-          }
-         
-          return
-        })
-      })
-      
-      
-    }
-    
 }

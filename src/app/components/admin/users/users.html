@@ -12,32 +12,33 @@
         <th>#</th>
         <th>Name</th>
         <th>Email</th>
-        <th>Role</th>
+        
         <th>Phone</th>
         <th>Address</th>
         <th class="text-end">Reg</th>
-        <th class="text-end">Last</th>
+        <th class=>Last</th>
+        <th>Status</th>
         <th class="text-end">Műveletek</th>
     </thead>
     <tbody>
-        <tr  *ngFor="let user of pagedUser; let i = index">
+        <tr  *ngFor="let user of pagedUser; let i = index" [ngClass]="{'inactive': !user.status}">
             <td>{{i+1}}</td>
             <td>{{user.name}}</td>
             <td>{{user.email}}</td>
-            <td>{{user.role}}</td>
+            
             <td>{{user.phone || "nincs hozzáadva"}}</td>
             <td>{{user.adress || "nincs hozzáadva"}} </td>
             <td class="text-end">{{user.reg}}</td>
             <td class="text-end">{{user.last}} </td>
+            <td>
+              <button class="btn btn-danger" data-bs-toggle="modal" *ngIf="user.id !=loggeduser.id" (click)="statusChange(user.id!)" >
+                <i class="bi bi-dash-circle"></i>
+              </button>
             
+            </td>
             <td class="text-end">
-                <button class="btn btn-warning me-2"><i class="bi-pencil" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></button>
-                <button class="btn btn-danger" data-bs-toggle="modal" *ngIf="user.status" (click)="letiltas(user.id! ,0)" >
-                    <i class="bi bi-dash-circle"></i>
-                </button>
-                <button class="btn btn-success" data-bs-toggle="modal" *ngIf="!user.status" (click)="visszatiltas(user.id!,1)" >
-                    <i class="bi bi-check-circle"></i>
-                </button>
+                <button class="btn btn-warning me-2"><i class="bi-pencil" data-bs-toggle="modal" data-bs-target="#formModal" (click)="showDetails(user.id!)"></i></button>
+                
             </td>
             <!--(click)="confirmDelete(pizza.id)"  (click)="getPizza(pizza.id)"-->
         </tr>
@@ -58,9 +59,81 @@
       <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i =index"><a class="page-link" (click)="setPage(i+1)" [class.active]="currentpage==i+1">{{i+1}}</a></li>
       
       <li class="page-item">
-        <a class="page-link" aria-label="Next" (click)="setPage(currentpage+1) " [class.disabled]="currentpage ===5">
+        <a class="page-link" aria-label="Next" (click)="setPage(currentpage+1) " [class.disabled]="currentpage ===totalPages">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
     </ul>
   </nav>
+
+  <!-- Modal -->
+  <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="!editMode">Rendelések</h1>
+          <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="editMode">Rendelések</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="cancel()" aria-label="Close"></button>
+        </div>
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'userinfo'" (click)="activeTab = 'userinfo'">Felhasználó adatai</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'">Rendelések</a>
+          </li>
+        </ul>
+        <div class="modal-body">
+          <!-- Felhasználó adatai Table -->
+          <div *ngIf="activeTab === 'userinfo'">
+            <table class="table table-bordered table-striped table-hover"> 
+              <thead>
+                <tr>
+                  <th>Tulajdonság</th>
+                  <th>Érték</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Név</td>
+                  <td>{{selecteduser.name}}</td>
+                </tr>
+                <tr>
+                  <td>Email cím</td>
+                  <td>{{selecteduser.email}}</td>
+                </tr>
+                <tr>
+                  <td>lakcím</td>
+                  <td>{{selecteduser.adress}}</td>
+                </tr>
+                <tr>
+                  <td>Jogosultság</td>
+                  <td>{{selecteduser.role}}</td>
+                </tr>
+                <tr>
+                  <td>Regisztráció dátuma</td>
+                  <td>{{selecteduser.reg}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Rendelések Table -->
+          <div *ngIf="activeTab === 'orders'">
+            <table class="table table-bordered table-striped table-hover">
+              <thead>
+                
+              </thead>
+              <tbody>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancel()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="save()">Mentés</button>
+        </div>
+      </div>
+    </div>
+  </div>

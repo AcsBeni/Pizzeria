@@ -13,41 +13,36 @@ export class Apiservice {
   constructor() { }
 
   //GET all records from table -> GET http://localhost:3000/users
-  async selectAll(table:string):Promise<ApiResponse>{
+  async selectAll(table: string):Promise<ApiResponse>{
     try{
-      const response = await axios.get(`${this.SERVER}/${table}`)
+      const response = await axios.get(`${this.SERVER}/${table}`);
       return {
         status: 200,
         data: response.data
       };
-     
-    }
-    catch(err:any){
-      console.log(err)
-      return{
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Hiba az adatbázis lekérdezése során"
+        message: 'Hiba történt az adatok elérésekor!'
       };
     }
   }
   //GET one record from table by id -> GET http://localhost:3000/users/5
-  async select(table:string, id:number):Promise<ApiResponse>{
+  async select(table: string, id: number):Promise<ApiResponse>{
     try{
-      const response = await axios.get(`${this.SERVER}/${table}/${id}`)
+      const response = await axios.get(`${this.SERVER}/${table}/${id}`);
       return {
         status: 200,
         data: response.data
       };
-     
-    }
-    catch(err:any){
-      console.log(err)
-      return{
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Hiba az adatbázis lekérdezése során"
+        message: 'Hiba történt az adatok elérésekor!'
       };
     }
   }
+
 
   async upload(formData: FormData): Promise<ApiResponse> {
     try {
@@ -102,6 +97,8 @@ export class Apiservice {
       };
     }
   }
+
+  
 
 
 

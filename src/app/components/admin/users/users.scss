@@ -1,0 +1,16 @@
+.inactive > td{
+    color: silver;
+    font-style: italic;
+    text-decoration: line-through;
+}
+#formModal .modal-content{
+    min-height: 70vh;
+    width: 800px;
+    overflow-y: auto;
+}
+#formModal .modal-body label{
+    font-weight: bold;
+}
+#formModal .modal-body .form-group{
+    margin-bottom: 15px;
+}
