@@ -1,6 +1,6 @@
 export interface Order {
     id:number;
-    userId:number;
+    user_id:number;
     total:number;
     status:string;
     created_at:Date;

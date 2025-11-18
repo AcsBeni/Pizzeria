@@ -37,7 +37,7 @@
             
             </td>
             <td class="text-end">
-                <button class="btn btn-warning me-2"><i class="bi-pencil" data-bs-toggle="modal" data-bs-target="#formModal" (click)="showDetails(user.id!)"></i></button>
+                <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#formModal" (click)="showDetails(user.id!)"><i class="bi-pencil" ></i></button>
                 
             </td>
             <!--(click)="confirmDelete(pizza.id)"  (click)="getPizza(pizza.id)"-->
@@ -45,20 +45,20 @@
     </tbody>
     <tfoot>
         <tr >
-            <td class="text-center" colspan="10">Összesen: <strong></strong>  rekord</td>
+            <td class="text-center" colspan="10">Összesen: <strong>{{users.length}}</strong></td>
         </tr>
     </tfoot>
 </table>
-<nav aria-label="Page navigation example" *ngIf="totalPages>1">
+<nav class="nocursor" aria-label="Page navigation example" *ngIf="totalPages>1">
     <ul class="pagination">
-      <li class="page-item">
+      <li class="page-item nocursor">
         <a class="page-link"  aria-label="Previous" (click)="setPage(currentpage-1)" [class.disabled]="currentpage ===1">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
       <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i =index"><a class="page-link" (click)="setPage(i+1)" [class.active]="currentpage==i+1">{{i+1}}</a></li>
       
-      <li class="page-item">
+      <li class="page-item nocursor">
         <a class="page-link" aria-label="Next" (click)="setPage(currentpage+1) " [class.disabled]="currentpage ===totalPages">
           <span aria-hidden="true">&raquo;</span>
         </a>
@@ -67,26 +67,29 @@
   </nav>
 
   <!-- Modal -->
-  <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+  <div class="modal modal-xl fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+        
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="!editMode">Rendelések</h1>
-          <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="editMode">Rendelések</h1>
+          <h1 class="modal-title fs-5" id="formModalLabel">Rendelések</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="cancel()" aria-label="Close"></button>
         </div>
+  
         <ul class="nav nav-tabs">
-          <li class="nav-item">
+          <li class="nav-item nocursor">
             <a class="nav-link" [class.active]="activeTab === 'userinfo'" (click)="activeTab = 'userinfo'">Felhasználó adatai</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item nocursor">
             <a class="nav-link" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'">Rendelések</a>
           </li>
         </ul>
+  
         <div class="modal-body">
-          <!-- Felhasználó adatai Table -->
+  
+          <!-- User info -->
           <div *ngIf="activeTab === 'userinfo'">
-            <table class="table table-bordered table-striped table-hover"> 
+            <table class="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
                   <th>Tulajdonság</th>
@@ -94,45 +97,90 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Név</td>
-                  <td>{{selecteduser.name}}</td>
-                </tr>
-                <tr>
-                  <td>Email cím</td>
-                  <td>{{selecteduser.email}}</td>
-                </tr>
-                <tr>
-                  <td>lakcím</td>
-                  <td>{{selecteduser.adress}}</td>
-                </tr>
-                <tr>
-                  <td>Jogosultság</td>
-                  <td>{{selecteduser.role}}</td>
-                </tr>
-                <tr>
-                  <td>Regisztráció dátuma</td>
-                  <td>{{selecteduser.reg}}</td>
-                </tr>
+                <tr><td>Név</td><td>{{selecteduser.name}}</td></tr>
+                <tr><td>Email cím</td><td>{{selecteduser.email}}</td></tr>
+                <tr><td>Lakcím</td><td>{{selecteduser.adress}}</td></tr>
+                <tr><td>Jogosultság</td><td>{{selecteduser.role}}</td></tr>
+                <tr><td>Regisztráció</td><td>{{selecteduser.reg}}</td></tr>
+
               </tbody>
             </table>
           </div>
-
-          <!-- Rendelések Table -->
+  
+          <!-- Orders -->
           <div *ngIf="activeTab === 'orders'">
             <table class="table table-bordered table-striped table-hover">
               <thead>
-                
+                <tr>
+                  <th>ID</th>
+                  <th>Összeg</th>
+                  <th>Státusz</th>
+                  <th>Készítés</th>
+                  <th>Frissítve</th>
+                  <th>Pizzák</th>
+                </tr>
               </thead>
               <tbody>
-                
+                <tr *ngFor="let order of orders">
+                  <td>{{order.id}}</td>
+                  <td>{{order.total | numberformat}} {{currency}}</td>
+                  <td>{{order.status}}</td>
+                  <td>{{order.created_at}}</td>
+                  <td>{{order.updated_at}}</td>
+                  <td>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pizzaModal" (click)="showPizzas(order.id)">
+                      Pizzák
+                    </button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
+  
         </div>
+  
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancel()">Close</button>
           <button type="button" class="btn btn-primary" (click)="save()">Mentés</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!--Pizza Modal-->
+
+
+  <div class="modal fade" id="pizzaModal" tabindex="-1" aria-labelledby="pizzaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pizzaModalLabel">Pizzák a rendelésben</h5>
+          <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#formModal"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Pizza</th>
+                <th>darab</th>
+                <th>Ár</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pizza of selectedPizzas">
+               
+                <td> {{ pizza.pizzaName }}</td>
+                <td>{{ pizza.quantity }}</td>
+                <td>{{pizza.price | numberformat}} {{currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#formModal">vissza</button>
         </div>
       </div>
     </div>
