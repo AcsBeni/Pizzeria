@@ -44,6 +44,21 @@ export class Registration {
         this.message.show('danger', 'Hiba', res.message)
         return
       }
+      let data ={
+        
+        "to":this.newUser.email,
+        "subject":"Regisztráció sikeres",
+        "template":"registration",
+        "data":{
+          "name": this.newUser.name,
+          "email": this.newUser.email,
+          "password": this.newUser.password,
+          "url": "http://localhost:4200/login",
+          "company": "pizzatürr"
+        }
+      }
+      this.api.sendEmail(data)
+
       this.message.show('success','Ok', res.message)
       this.newUser={
       
