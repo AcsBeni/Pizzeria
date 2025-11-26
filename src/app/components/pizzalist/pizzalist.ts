@@ -50,18 +50,18 @@ export class Pizzalist implements OnInit {
     }
     let data={
       userid: this.auth.loggedUser()[0].id,
-      pizzaId : pizzaId,
+      pizzaid : pizzaId,
       amount: amount
     }
 
     pizza?.amount==0
      
-    this.api.select('carts/userId/eq', data.userid).then(res=>
+    this.api.selectAll('carts/userid/eq/'+ data.userid).then(res=>
     {
       let idx =-1
       console.log(res.data)
       if(res.data.length >0){
-        idx = res.data.findIndex((item: {pizzaid:number;}) => item.pizzaid = data.pizzaId)
+        idx = res.data.findIndex((item: {pizzaid:number;}) => item.pizzaid == data.pizzaid)
       }
       if(idx > -1){
         data.amount = res.data[idx].amount + amount

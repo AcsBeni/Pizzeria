@@ -1,1 +1,33 @@
-<p>cart works!</p>
+<h3>Kosár tartalma</h3>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Pizza megnevezése</th>
+            <th class="text-end">Egységár</th>
+            <th class="text-end">Mennyiség</th>
+            <th class="text-end">Összesen</th>
+            <th class="text-end">Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of items; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{item.pizzaName}}</td>
+            <td>{{item.price | numberformat}} {{currency}}</td>
+            <td> <input type="number" class="form-control w-50" id="cart" [(ngModel)]="item.amount"  min="0"></td>
+            <td>{{item.total | numberformat}} {{currency}}</td>
+            <td class="text-end">
+                <button type="button" class="btn btn-secondary btn-sm" ><i class="bi-pencil"></i></button>
+                <button type="button" class="btn btn-danger btn-sm" ><i class="bi-x-circle"></i> Delete</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4">Összesen:</td>
+            <td class="text-end"><strong>{{allTotal | numberformat}}</strong>{{currency}}</td>
+            <td><br></td>
+        </tr>
+    </tfoot>
+</table>
