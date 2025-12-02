@@ -9,6 +9,7 @@ import { NumberformatPipe } from "../../pipes/numberformat-pipe";
 import { enviroment } from '../../../enviroment/enviroment';
 import { Lightbox } from '../system/lightbox/lightbox';
 import { MessageService } from '../../services/message.service';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-pizzalist',
@@ -25,11 +26,13 @@ export class Pizzalist implements OnInit {
   constructor(
     private api: Apiservice,
     private auth: Auth,
-   private message: MessageService
+   private message: MessageService,
+   private carts: CartService
   ){
 
   }
-
+  
+  
   serverUrl = enviroment.serverUrl;
     lightboxVisible = false;
     lightboxImage = '';
@@ -73,6 +76,7 @@ export class Pizzalist implements OnInit {
       else{
         this.api.insert('carts', data).then(res=>{
           this.message.show("success", "OK", "A pizza hozzáadva a kosárba")
+          this.carts.refreshCartCount()
           return
         })
       }

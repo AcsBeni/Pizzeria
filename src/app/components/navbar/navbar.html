@@ -9,7 +9,7 @@
          
           <li class="nav-item" *ngFor="let items of navItems">
             <a class="nav-link" routerLink="{{items.url}}" >{{items.name}}
-              <span class="badge text-bg-danger">{{items.badge}}</span>
+              <span class="badge text-bg-danger" *ngIf="items.badge && items.badge >0">{{items.badge}}</span>
             </a>
             
           </li>

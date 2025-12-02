@@ -3,7 +3,7 @@ export interface CartItem{
     userid:number,
     pizaaid:number,
     userName:string,
-    pizzaName:string,
+    PizzaName:string,
     price:number,
     amount:number,
     total:number

@@ -38,7 +38,7 @@
                 <div class="d-flex flex-row justify-content-end gap-2">
                     
                     <input type="number" class="form-control w-50" id="cart" [(ngModel)]="pizza.amount"  min="0">
-                    <button class="btn btn-primary"><i class="bi bi-cart-plus" (click)="AddtoCart(pizza.id)"></i></button>
+                    <button class="btn btn-primary" (click)="AddtoCart(pizza.id)"><i class="bi bi-cart-plus" ></i></button>
                   </div>
             </td>
         </tr>

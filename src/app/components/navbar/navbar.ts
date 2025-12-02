@@ -4,6 +4,7 @@ import { Navitem } from '../../interfaces/navitem';
 import { RouterLink } from "@angular/router";
 import { CommonModule, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,8 @@ import { Auth } from '../../services/auth';
 export class NavbarComponent implements OnInit {
   constructor(    
    
-    private auth: Auth
+    private auth: Auth,
+    private cart: CartService
   ){
   }
   @Input() title = '';
@@ -22,6 +24,7 @@ export class NavbarComponent implements OnInit {
   isAdmin=false
   loggedUserName=''
   navItems: Navitem[] = [];
+  cartCount=0
 
   ngOnInit(): void {
     this.auth.Isloggedin$.subscribe(res=>{
@@ -30,6 +33,15 @@ export class NavbarComponent implements OnInit {
       
       if(this.isLoggedIn){
         this.loggedUserName= this.auth.loggedUser()[0].name
+        this.cart.refreshCartCount();
+
+        this.cart.cartCount$.subscribe(count =>{
+          this.cartCount = count
+          this.setupMenu(res)
+        })
+      }
+      else{
+        this.setupMenu(false)
       }
      
       this.setupMenu(res);
@@ -80,7 +92,7 @@ export class NavbarComponent implements OnInit {
           name:"Kosár",
           url:"cart",
           icon:"bi-cart",
-          badge:3
+          badge:this.cartCount
         },
         {
           name: 'Profilom',

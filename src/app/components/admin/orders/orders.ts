@@ -65,14 +65,14 @@ export class Orders {
   getOrders() {
     this.api.selectAll('orders').then(res => {
       this.Orders = res.data;
-      
-      this.pagedOrder = this.Orders.slice(0, this.pageSize); // Example for pagination
-      
-     
+      this.totalPages = Math.ceil(this.Orders.length / this.pageSize);
+      this.pagedOrder = this.Orders.slice(0, this.pageSize);
+  
     }).catch(err => {
       console.error('Error fetching orders:', err);
     });
   }
+  
 
   setPage(page:number){
     this.currentpage =page;

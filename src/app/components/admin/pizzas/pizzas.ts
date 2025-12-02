@@ -129,6 +129,7 @@ export class Pizzas implements OnInit, AfterViewInit {
         else{
           this.pizza.image = res.data.filename;
         }
+        this.getPizzas();
 
       }
 
@@ -229,7 +230,9 @@ export class Pizzas implements OnInit, AfterViewInit {
         this.api.update('pizzas', id, this.pizza).then(res => {
           this.message.show('success', 'Ok', 'A kép törölve!');
         });
+        this.getPizzas();
        }
+       
     });
   }
 
