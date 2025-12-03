@@ -21,7 +21,6 @@ import { Orderitems } from '../../../interfaces/orderitems';
 })
 export class Cart implements OnInit {
   
-
   items: CartItem[] = [];
   currency = enviroment.currency;
   allTotal =0
@@ -120,6 +119,7 @@ export class Cart implements OnInit {
           quantity: items.amount,
           price: items.price,
         }
+        
         this.message.show('success', 'Success', 'A Rendelés sikeres!');
 
         let p = this.api.insert('order_items', orderItem).then(res =>{
@@ -130,6 +130,7 @@ export class Cart implements OnInit {
 
       Promise.all(promises).then(()=>{
         this.message.show('success', 'Ok', 'A rendelés sikeresen leadva!')
+        this.sendOrderInfo(this.items, this.newOrder)
         this.getData();
         this.cart.clearCartCount();
         this.newOrder={
@@ -147,6 +148,24 @@ export class Cart implements OnInit {
       })
     })
   }
-  
+  sendOrderInfo(pizzas: CartItem[], orderinfo:Order ){
+    let data ={
+      to: this.auth.loggedUser()[0].email,
+      subject: 'Rendelés visszaigazolás',
+      template: 'orderinfo',
+      data: {
+        pizzas,
+        payment: orderinfo.payment,
+        shipping: orderinfo.shipping,
+        comment: orderinfo.comment,
+        username: this.auth.loggedUser()[0].name,
+        address: this.auth.loggedUser()[0].address,
+        phone: this.auth.loggedUser()[0].phone
+      }
+    }
+    this.api.sendEmail(data).then(res =>{
+      console.log(res)
+    })
+  }
     
 }
